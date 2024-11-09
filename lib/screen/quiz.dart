@@ -29,6 +29,7 @@ class _QuizScreenState extends State<QuizScreen> {
   int _timeLeft = 10;
   List<String> _answers = [];
   List<dynamic> _questions = [];
+  Map<String, Color> _answerColors = {};
 
   @override
   void initState() {
@@ -76,6 +77,9 @@ class _QuizScreenState extends State<QuizScreen> {
     _answers = [...currentQuestion['incorrect_answers']];
     _answers.add(currentQuestion['correct_answer']);
     _answers.shuffle(Random());
+
+    // Initialiser les couleurs des réponses
+    _answerColors = {for (var answer in _answers) answer: Colors.blueAccent};
   }
 
   void _handleAnswer(String? selectedAnswer) {
@@ -83,7 +87,14 @@ class _QuizScreenState extends State<QuizScreen> {
     setState(() {
       _isAnswered = true;
 
-      if (selectedAnswer == _questions[_currentQuestionIndex]['correct_answer']) {
+      String correctAnswer = _questions[_currentQuestionIndex]['correct_answer'];
+
+      // Définir les couleurs pour toutes les mauvaises réponses en rouge et la bonne réponse en vert
+      for (var answer in _answers) {
+        _answerColors[answer] = (answer == correctAnswer) ? Colors.green : Colors.red;
+      }
+
+      if (selectedAnswer == correctAnswer) {
         _score++;
       }
 
@@ -140,23 +151,42 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
       body: _questions.isEmpty
           ? Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                Text('Temps restant: $_timeLeft sec', style: TextStyle(fontSize: 18, color: Colors.red)),
-                SizedBox(height: 20),
-                Text(_questions[_currentQuestionIndex]['question'], style: TextStyle(fontSize: 20)),
-                ..._answers.map((answer) => GestureDetector(
-                      onTap: _isAnswered ? null : () => _handleAnswer(answer),
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(10),
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text(
+                    'Temps restant: $_timeLeft sec',
+                    style: TextStyle(fontSize: 18, color: Colors.red),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    _questions[_currentQuestionIndex]['question'],
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  ..._answers.map((answer) => GestureDetector(
+                        onTap: _isAnswered ? null : () => _handleAnswer(answer),
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            color: _answerColors[answer],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Text(
+                              answer,
+                              style: TextStyle(color: Colors.white, fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
-                        child: Center(child: Text(answer, style: TextStyle(color: Colors.white))),
-                      ),
-                    )),
-              ],
+                      )),
+                ],
+              ),
             ),
     );
   }
