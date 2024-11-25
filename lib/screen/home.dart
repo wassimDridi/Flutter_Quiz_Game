@@ -7,6 +7,7 @@ import 'package:quizzz/screen/settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quizzz/screen/authentification.dart';
+import 'package:quizzz/extensions/extensions.dart'; // Importez l'extension pour .tr
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -61,21 +62,18 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_user == null) return; // Ensure user is authenticated
 
     try {
-      // Reference to the user's score document
       final userScoreRef = FirebaseFirestore.instance
           .collection('scores')
-          .doc(_user!.email); // Use email as document ID for uniqueness
+          .doc(_user!.email);
 
       final userScoreDoc = await userScoreRef.get();
 
       if (userScoreDoc.exists) {
-        // If the document exists, update the score by adding the new correctAnswers
         final currentScore = userScoreDoc['correctAnswers'] as int;
         final updatedScore = currentScore + correctAnswers;
 
         await userScoreRef.update({'correctAnswers': updatedScore});
       } else {
-        // If the document does not exist, create a new score record
         await userScoreRef.set({
           'userEmail': _user!.email,
           'correctAnswers': correctAnswers,
@@ -84,15 +82,13 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
 
-      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Score updated successfully!'),
+        content: Text('score_update_success'.tr(context)),
         backgroundColor: Colors.green,
       ));
     } catch (error) {
-      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to update score: $error'),
+        content: Text('score_update_failed'.tr(context)),
         backgroundColor: Colors.red,
       ));
     }
@@ -138,19 +134,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quiz App'),
+        title: Text('home_title'.tr(context)),
         backgroundColor: Colors.blueAccent,
         actions: [
           Center(
             child: Text(
-              _user?.email ?? 'Guest',
+              _user?.email ?? 'guest_user'.tr(context),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
           SizedBox(width: 10),
           IconButton(
             icon: Icon(Icons.logout),
-            tooltip: 'Déconnexion',
+            tooltip: 'logout_tooltip'.tr(context),
             onPressed: _logout,
           ),
         ],
@@ -160,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  Text('Nombre de Questions:', style: TextStyle(fontSize: 18)),
+                  Text('num_questions_label'.tr(context), style: TextStyle(fontSize: 18)),
                   DropdownButton<int>(
                     value: _numQuestions,
                     items: _questionNumbers.map((num) => DropdownMenuItem<int>(
@@ -174,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                   SizedBox(height: 20),
-                  Text('Catégorie:', style: TextStyle(fontSize: 18)),
+                  Text('category_label'.tr(context), style: TextStyle(fontSize: 18)),
                   DropdownButton<String>(
                     value: _selectedCategory,
                     items: _categories.map((category) => DropdownMenuItem<String>(
@@ -188,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                   SizedBox(height: 20),
-                  Text('Difficulté:', style: TextStyle(fontSize: 18)),
+                  Text('difficulty_label'.tr(context), style: TextStyle(fontSize: 18)),
                   DropdownButton<String>(
                     value: _selectedDifficulty,
                     items: _difficultyLevels.map((difficulty) => DropdownMenuItem<String>(
@@ -208,29 +204,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     ),
                     child: Text(
-                      'Début du jeu',
+                      'start_game_button'.tr(context),
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
                 ],
               ),
             )
-          : Center(child: Text('Select a tab.')),
+          : Center(child: Text('select_tab_label'.tr(context))),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Accueil',
+            label: 'home_tab'.tr(context),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.score),
-            label: 'Scores',
+            label: 'scores_tab'.tr(context),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Paramètres',
+            label: 'settings_tab'.tr(context),
           ),
         ],
       ),

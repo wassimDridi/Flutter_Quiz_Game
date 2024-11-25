@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../extensions/extensions.dart'; // Importer l'extension .tr
+import 'package:quizzz/parameter/app_localizations.dart';
 
 class AuthentificationPage extends StatelessWidget {
   final TextEditingController txt_login = TextEditingController();
@@ -8,7 +10,9 @@ class AuthentificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Page Authentification')),
+      appBar: AppBar(
+        title: Text('auth_page_title'.tr(context)), // Traduction du titre
+      ),
       body: Column(
         children: [
           Container(
@@ -17,7 +21,7 @@ class AuthentificationPage extends StatelessWidget {
               controller: txt_login,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.person),
-                hintText: "Utilisateur",
+                hintText: "user_hint".tr(context), // Traduction du placeholder
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(width: 1),
@@ -32,7 +36,7 @@ class AuthentificationPage extends StatelessWidget {
               obscureText: true,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock),
-                hintText: "Mot de passe",
+                hintText: "password_hint".tr(context), // Traduction du placeholder
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(width: 1),
@@ -47,7 +51,7 @@ class AuthentificationPage extends StatelessWidget {
               onPressed: () {
                 _onAuthentifier(context);
               },
-              child: Text('Connexion', style: TextStyle(fontSize: 22)),
+              child: Text('login_button'.tr(context), style: TextStyle(fontSize: 22)), // Traduction du bouton
             ),
           ),
           TextButton(
@@ -56,7 +60,7 @@ class AuthentificationPage extends StatelessWidget {
               Navigator.pushNamed(context, '/insc');
             },
             child: Text(
-              "Nouvel utilisateur",
+              "new_user".tr(context), // Traduction du texte
               style: TextStyle(fontSize: 22),
             ),
           )
@@ -67,29 +71,22 @@ class AuthentificationPage extends StatelessWidget {
 
   Future<void> _onAuthentifier(BuildContext context) async {
     try {
-      // Authentification avec Firebase
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: txt_login.text.trim(),
         password: txt_password.text.trim(),
       );
 
-      // Redirection vers la page d'accueil après une connexion réussie
       Navigator.pop(context);
       Navigator.pushNamed(context, '/welcome');
-
-      //Navigator.pop(context);
-      //Navigator.pushNamed(context, '/welcome');
-      print('---------------auth auth-------------------');
     } on FirebaseAuthException catch (e) {
-      // Gérer les erreurs de Firebase
       String errorMessage;
 
       if (e.code == 'user-not-found') {
-        errorMessage = "Utilisateur non trouvé.";
+        errorMessage = "user_not_found_error".tr(context); // Traduction des erreurs
       } else if (e.code == 'wrong-password') {
-        errorMessage = "Mot de passe incorrect.";
+        errorMessage = "wrong_password_error".tr(context); // Traduction des erreurs
       } else {
-        errorMessage = "Une erreur est survenue. Veuillez réessayer.";
+        errorMessage = "general_error".tr(context); // Traduction des erreurs
       }
 
       final snackBar = SnackBar(content: Text(errorMessage));
