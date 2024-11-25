@@ -12,12 +12,14 @@ class QuizScreen extends StatefulWidget {
   final String selectedCategory;
   final String selectedDifficulty;
   final int categoryId;
+  final Function(int correctAnswers) onQuizComplete;
 
   QuizScreen({
     required this.numQuestions,
     required this.selectedCategory,
     required this.selectedDifficulty,
     required this.categoryId,
+    required this.onQuizComplete,
   });
 
   @override
@@ -46,17 +48,20 @@ class _QuizScreenState extends State<QuizScreen> {
     String apiUrl =
         'https://opentdb.com/api.php?amount=${widget.numQuestions}&category=${widget.categoryId}&difficulty=${widget.selectedDifficulty}&type=multiple';
 
-    final response = await http.get(Uri.parse(apiUrl));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        _questions = data['results'];
-      });
-      _startTimer();
-      _prepareAnswers();
-    } else {
-      print('Failed to load questions');
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _questions = data['results'];
+        });
+        _startTimer();
+        _prepareAnswers();
+      } else {
+        _showError('Failed to load questions. Please try again later.');
+      }
+    } catch (e) {
+      _showError('An error occurred while fetching questions.');
     }
   }
 
@@ -138,6 +143,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
           title: Text('Quiz terminé'),
@@ -145,8 +151,10 @@ class _QuizScreenState extends State<QuizScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Votre score: $_score/${_questions.length}'),
+              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
+                  widget.onQuizComplete(_score);
                   Navigator.pop(context);
                   Navigator.pop(context);
                 },
@@ -154,6 +162,24 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  void _showError(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Erreur'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
         );
       },
     );
