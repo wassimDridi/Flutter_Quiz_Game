@@ -7,7 +7,7 @@ import 'package:quizzz/screen/settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quizzz/screen/authentification.dart';
-import 'package:quizzz/extensions/extensions.dart'; // Importez l'extension pour .tr
+import 'package:quizzz/extensions/extensions.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> _difficultyLevels = ['easy', 'medium', 'hard'];
   int _currentIndex = 0;
 
-  final User? _user = FirebaseAuth.instance.currentUser; // Current authenticated user
+  final User? _user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -52,14 +52,14 @@ class _HomeScreenState extends State<HomeScreen> {
           selectedCategory: _selectedCategory,
           selectedDifficulty: _selectedDifficulty,
           categoryId: categoryId,
-          onQuizComplete: _saveScore, // Callback to save score
+          onQuizComplete: _saveScore,
         ),
       ),
     );
   }
 
   Future<void> _saveScore(int correctAnswers) async {
-    if (_user == null) return; // Ensure user is authenticated
+    if (_user == null) return;
 
     try {
       final userScoreRef = FirebaseFirestore.instance
@@ -138,12 +138,15 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.blueAccent,
         actions: [
           Center(
-            child: Text(
-              _user?.email ?? 'guest_user'.tr(context),
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Text(
+                _user?.email ?? 'guest_user'.tr(context),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
-          SizedBox(width: 10),
           IconButton(
             icon: Icon(Icons.logout),
             tooltip: 'logout_tooltip'.tr(context),
@@ -152,64 +155,83 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: _currentIndex == 0
-          ? Padding(
+          ? ListView(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  Text('num_questions_label'.tr(context), style: TextStyle(fontSize: 18)),
-                  DropdownButton<int>(
-                    value: _numQuestions,
-                    items: _questionNumbers.map((num) => DropdownMenuItem<int>(
-                          value: num,
-                          child: Text('$num'),
-                        )).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _numQuestions = value!;
-                      });
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  Text('category_label'.tr(context), style: TextStyle(fontSize: 18)),
-                  DropdownButton<String>(
+              children: [
+                Text('num_questions_label'.tr(context), style: TextStyle(fontSize: 18)),
+                DropdownButton<int>(
+                  value: _numQuestions,
+                  items: _questionNumbers.map((num) => DropdownMenuItem<int>(
+                        value: num,
+                        child: Text('$num'),
+                      )).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _numQuestions = value!;
+                    });
+                  },
+                ),
+                SizedBox(height: 20),
+                Text('category_label'.tr(context), style: TextStyle(fontSize: 18)),
+                              Container(
+                  child: DropdownButton<String>(
                     value: _selectedCategory,
                     items: _categories.map((category) => DropdownMenuItem<String>(
                           value: category['name'],
-                          child: Text(category['name']),
-                        )).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedCategory = value!;
-                      });
-                    },
+                          child: Row(
+                            children: [
+                              Icon(
+                                _getCategoryIcon(category['name']),
+                                size: 24,
+                                color: Colors.blue,
+                              ),
+                              SizedBox(width: 10), // Espacement entre l'icône et le texte
+                              Text(
+                                category['name'],
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      )).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedCategory = value!;
+                    });
+                  },
                   ),
-                  SizedBox(height: 20),
-                  Text('difficulty_label'.tr(context), style: TextStyle(fontSize: 18)),
-                  DropdownButton<String>(
-                    value: _selectedDifficulty,
-                    items: _difficultyLevels.map((difficulty) => DropdownMenuItem<String>(
-                          value: difficulty,
-                          child: Text(difficulty),
-                        )).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedDifficulty = value!;
-                      });
-                    },
                   ),
-                  SizedBox(height: 40),
-                  ElevatedButton(
+
+                SizedBox(height: 20),
+                Text('difficulty_label'.tr(context), style: TextStyle(fontSize: 18)),
+                DropdownButton<String>(
+                  value: _selectedDifficulty,
+                  items: _difficultyLevels.map((difficulty) => DropdownMenuItem<String>(
+                        value: difficulty,
+                        child: Text(difficulty),
+                      )).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedDifficulty = value!;
+                    });
+                  },
+                ),
+                SizedBox(height: 40),
+                Center(
+                  child: ElevatedButton(
                     onPressed: _startQuiz,
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
                     ),
                     child: Text(
                       'start_game_button'.tr(context),
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             )
           : Center(child: Text('select_tab_label'.tr(context))),
       bottomNavigationBar: BottomNavigationBar(
@@ -232,4 +254,28 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  IconData _getCategoryIcon(String categoryName) {
+  switch (categoryName) {
+    case 'General Knowledge':
+      return Icons.lightbulb;
+    case 'Entertainment: Books':
+      return Icons.book;
+    case 'Entertainment: Film':
+      return Icons.movie;
+    case 'Entertainment: Music':
+      return Icons.music_note;
+    case 'Science & Nature':
+      return Icons.nature;
+    case 'Science: Computers':
+      return Icons.computer;
+    case 'Sports':
+      return Icons.sports_soccer;
+    case 'Geography':
+      return Icons.map;
+    default:
+      return Icons.category; // Icône par défaut
+  }
+}
+
 }

@@ -49,7 +49,10 @@
   "Change Language": "Change Language",
   "English": "English",
   "Français": "Français",
-  "العربية": "Arabic"
+  "العربية": "Arabic",
+  "scores_title": "Scores",
+  "your_score": "Your score: {0}",
+  "user_ranking": "User Rankings"
   
 
 }

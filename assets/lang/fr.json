@@ -49,6 +49,8 @@
   "Enable Sounds": "Activer les Sons",
   "English": "Anglais",
   "Français": "Français",
-  "العربية": "Arabe"
-
+  "العربية": "Arabe",
+  "scores_title": "Scores",
+  "your_score": "Votre score : {0}",
+  "user_ranking": "Classement des utilisateurs"
 }

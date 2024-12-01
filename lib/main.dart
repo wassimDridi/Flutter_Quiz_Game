@@ -17,7 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();   
   await Firebase.initializeApp(); 
   await NotificationService().initNotifications();
-  await EasyLocalization.ensureInitialized(); // Ensure translations are loaded
+  await EasyLocalization.ensureInitialized(); 
 
   runApp(
     MultiProvider(
@@ -80,14 +80,10 @@ class MyApp extends StatelessWidget {
 class _AuthChecker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Vérifier si l'utilisateur est déjà authentifié
     final user = FirebaseAuth.instance.currentUser;
-
     if (user != null) {
-      // Si l'utilisateur est connecté, aller directement à la page d'accueil
       return WelcomeScreen();
     } else {
-      // Sinon, rediriger vers la page d'authentification
       return AuthentificationPage();
     }
   }

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quizzz/parameter/SettingsProvider.dart';
 import 'package:quizzz/parameter/Theme.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:quizzz/extensions/extensions.dart'; // Import the .tr extension
 import 'package:quizzz/screen/Score.dart';
-import 'package:quizzz/screen/home.dart'; 
+import 'package:quizzz/screen/home.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -27,7 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'.tr()),
+        title: Text('Settings'.tr(context)), // Use translated text
         backgroundColor: Colors.blueAccent,
       ),
       body: Center(
@@ -35,13 +35,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Settings_Screen'.tr(), // Translated screen title
+              'Settings Screen'.tr(context), // Use translated text
               style: TextStyle(fontSize: 24),
             ),
             SizedBox(height: 20),
             // Sound toggle
             SwitchListTile(
-              title: Text('Enable_Sounds'.tr()), // Translated sound option
+              title: Text('Enable Sounds'.tr(context)), // Use translated text
               value: settingsProvider.isSoundEnabled,
               onChanged: (value) {
                 settingsProvider.toggleSound(value);
@@ -50,7 +50,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(height: 20),
             // Dark mode toggle
             SwitchListTile(
-              title: Text('Dark_Mode'.tr()), // Translated dark mode option
+              title: Text('Dark Mode'.tr(context)), // Use translated text
               value: isDarkMode,
               onChanged: (value) {
                 themeProvider.toggleTheme(value);
@@ -58,27 +58,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             SizedBox(height: 20),
             // Language change
-            Text('Change_Language'.tr()), // Translated text for language change
+            Text('Change Language'.tr(context)), // Use translated text
             DropdownButton<String>(
               value: currentLocale.languageCode,
               onChanged: (String? newLang) {
                 if (newLang != null) {
                   themeProvider.setLocale(Locale(newLang));
-                  context.setLocale(Locale(newLang)); // Update locale
+                 // context.setLocale(Locale(newLang)); // Update locale
                 }
               },
               items: [
                 DropdownMenuItem(
                   value: 'en',
-                  child: Text('English'.tr()), // Translated language name
+                  child: Text('english'.tr(context)), // Use translated text
                 ),
                 DropdownMenuItem(
                   value: 'fr',
-                  child: Text('Français'.tr()), // Translated language name
+                  child: Text('french'.tr(context)), // Use translated text
                 ),
                 DropdownMenuItem(
                   value: 'ar',
-                  child: Text('العربية'.tr()), // Translated language name
+                  child: Text('arabic'.tr(context)), // Use translated text
                 ),
               ],
             ),
@@ -91,15 +91,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'home_tab'.tr(), // Translated tab name
+            label: 'home_tab'.tr(context), // Use translated text
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.score),
-            label: 'scores_tab'.tr(), // Translated tab name
+            label: 'scores_tab'.tr(context), // Use translated text
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'settings_tab'.tr(), // Translated tab name
+            label: 'settings_tab'.tr(context), // Use translated text
           ),
         ],
       ),
@@ -126,7 +126,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
         break;
       case 2:
-        // Stay on Settings screen
+      // Stay on Settings screen
         break;
     }
   }

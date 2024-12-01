@@ -2,11 +2,8 @@
   "Home": "الرئيسية",
   "Settings": "الإعدادات",
   "Settings Screen": "شاشة الإعدادات",
-  "Settings_Screen": "شاشة الإعدادات",
   "Dark Mode": "الوضع الداكن",
-  "Dark_Mode": "الوضع الداكن",
   "Change Language:": "تغيير اللغة :",
-  "Change_Language:": "تغيير اللغة :",
   "auth_page_title": "صفحة تسجيل الدخول",
   "user_hint": "اسم المستخدم",
   "password_hint": "كلمة المرور",
@@ -49,9 +46,11 @@
   "score_update_success": "تم تحديث النتيجة بنجاح!",
   "score_update_failed": "فشل تحديث النتيجة: {0}",
   "Enable Sounds": "تمكين الأصوات",
-  "Enable_Sounds": "تمكين الأصوات",
   "Change Language": "تغيير اللغة",
   "English": "الإنجليزية",
   "Français": "الفرنسية",
-  "العربية": "العربية"
+  "العربية": "العربية",
+  "scores_title": "النتائج",
+  "your_score": "نتيجتك: {0}",
+  "user_ranking": "ترتيب المستخدمين"
 }
