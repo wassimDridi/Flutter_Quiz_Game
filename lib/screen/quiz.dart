@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
 import 'package:quizzz/parameter/SettingsProvider.dart';
+import 'package:quizzz/screen/SummaryScreen.dart';
+import 'package:quizzz/extensions/extensions.dart'; // Import des extensions
 
 class QuizScreen extends StatefulWidget {
   final int numQuestions;
@@ -35,6 +37,7 @@ class _QuizScreenState extends State<QuizScreen> {
   List<String> _answers = [];
   List<dynamic> _questions = [];
   Map<String, Color> _answerColors = {};
+  List<String> _userAnswers = [];
 
   final AudioPlayer _audioPlayer = AudioPlayer();
 
@@ -58,10 +61,10 @@ class _QuizScreenState extends State<QuizScreen> {
         _startTimer();
         _prepareAnswers();
       } else {
-        _showError('Failed to load questions. Please try again later.');
+        _showError('failed_to_load_questions'.tr(context));
       }
     } catch (e) {
-      _showError('An error occurred while fetching questions.');
+      _showError('failed_to_load_questions'.tr(context));
     }
   }
 
@@ -83,14 +86,10 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Future<void> _playSound(String soundFile) async {
-    try {
-      final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
-      if (settingsProvider.isSoundEnabled) {
-        await _audioPlayer.setReleaseMode(ReleaseMode.stop);
-        await _audioPlayer.play(AssetSource('sounds/$soundFile'));
-      }
-    } catch (e) {
-      print('Error playing sound: $e');
+    final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+    if (settingsProvider.isSoundEnabled) {
+      await _audioPlayer.setReleaseMode(ReleaseMode.stop);
+      await _audioPlayer.play(AssetSource('sounds/$soundFile'));
     }
   }
 
@@ -109,6 +108,7 @@ class _QuizScreenState extends State<QuizScreen> {
       _isAnswered = true;
 
       String correctAnswer = _questions[_currentQuestionIndex]['correct_answer'];
+      _userAnswers.add(selectedAnswer ?? 'no_answer'.tr(context));
 
       _answerColors = {
         for (var answer in _answers)
@@ -146,19 +146,29 @@ class _QuizScreenState extends State<QuizScreen> {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          title: Text('Quiz terminé'),
+          title: Text('quiz_completed'.tr(context)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Votre score: $_score/${_questions.length}'),
+              Text(
+  'your_score'.tr(context,args: ['$_score', '${_questions.length}']),
+),
+
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   widget.onQuizComplete(_score);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SummaryScreen(
+                        questions: _questions,
+                        userAnswers: _userAnswers,
+                      ),
+                    ),
+                  );
                 },
-                child: Text('Retour à l\'accueil'),
+                child: Text('back_to_home'.tr(context)),
               ),
             ],
           ),
@@ -172,7 +182,7 @@ class _QuizScreenState extends State<QuizScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Erreur'),
+          title: Text('error'.tr(context)),
           content: Text(message),
           actions: [
             TextButton(
@@ -196,7 +206,7 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quiz en cours'),
+        title: Text('quiz_in_progress'.tr(context)),
       ),
       body: _questions.isEmpty
           ? Center(child: CircularProgressIndicator())
@@ -205,7 +215,8 @@ class _QuizScreenState extends State<QuizScreen> {
               child: Column(
                 children: [
                   Text(
-                    'Temps restant: $_timeLeft sec',
+
+'remaining_time'.tr(context, args: ['${_timeLeft}']),
                     style: TextStyle(fontSize: 18, color: Colors.red),
                   ),
                   SizedBox(height: 20),

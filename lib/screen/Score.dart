@@ -82,6 +82,7 @@ class _ScoreScreenState extends State<ScoreScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('scores_title'.tr(context)), // Use translated text
+        
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -90,7 +91,7 @@ class _ScoreScreenState extends State<ScoreScreen> {
           children: [
             // Display current user's score
             Text(
-              'your_score'.tr(context , args: [_currentUserScore.toString()]),
+              'your_score1'.tr(context , args: [_currentUserScore.toString()]),
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),

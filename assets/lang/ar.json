@@ -51,6 +51,18 @@
   "Français": "الفرنسية",
   "العربية": "العربية",
   "scores_title": "النتائج",
-  "your_score": "نتيجتك: {0}",
-  "user_ranking": "ترتيب المستخدمين"
+  "user_ranking": "ترتيب المستخدمين",
+  "quiz_in_progress": "الاختبار قيد التنفيذ",
+  "remaining_time": "الوقت المتبقي: {0} ثانية",
+  "quiz_completed": "تم الانتهاء من الاختبار",
+  "your_score": "درجتك: {0}/{1}",
+  "your_score1": "نتيجتك: {0}",
+  "back_to_home": "العودة إلى الصفحة الرئيسية",
+  "error": "خطأ",
+  "failed_to_load_questions": "فشل تحميل الأسئلة. الرجاء المحاولة لاحقًا.",
+  "no_answer": "لا إجابة",
+  "summary_title": "ملخص الاختبار",
+  "question_number": "السؤال {0}: {1}",
+  "your_answer": "إجابتك: {0}",
+  "correct_answer": "الإجابة الصحيحة: {0}"
 }

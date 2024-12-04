@@ -51,8 +51,20 @@
   "Français": "Français",
   "العربية": "Arabic",
   "scores_title": "Scores",
-  "your_score": "Your score: {0}",
-  "user_ranking": "User Rankings"
+  "user_ranking": "User Rankings",
+  "quiz_in_progress": "Quiz in Progress",
+  "remaining_time": "Time left: {0} sec",
+  "quiz_completed": "Quiz Completed",
+  "your_score": "Your score: {0}/{1}",
+  "your_score1": "Your score: {0} ",
+  "back_to_home": "Back to Home",
+  "error": "Error",
+  "failed_to_load_questions": "Failed to load questions. Please try again later.",
+  "no_answer": "No Answer",
+  "summary_title": "Quiz Summary",
+  "question_number": "Question {0}: {1}",
+  "your_answer": "Your answer: {0}",
+  "correct_answer": "Correct answer: {0}"
   
 
 }

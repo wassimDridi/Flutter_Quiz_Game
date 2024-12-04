@@ -41,6 +41,10 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
+          debugShowMaterialGrid: false,
+          debugShowCheckedModeBanner: false,
+          showSemanticsDebugger: false,
+
           routes: routes,
           themeMode: themeProvider.themeMode,
           theme: ThemeData.light(),
